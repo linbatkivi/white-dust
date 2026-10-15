@@ -7,7 +7,7 @@
    ========================================================================== */
 window.WD_CONFIG = {
   repo: "linbatkivi/white_dust",                     // GitHub-repo med releases
-  appVersion: "v1.0.0",                              // spillets version (vises på siden)
+  appVersion: "v1.1.0",                              // spillets version (vises på siden)
 
   downloads: {
     windows: { file: "WhiteDust-Setup.exe",      size: "650 MB", req: "Windows 10 / 11 · 64-bit" },

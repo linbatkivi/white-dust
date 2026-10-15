@@ -13,7 +13,9 @@ Spillet           →  ligger HELT inde i desktop-appen (Electron)            (~
 Multiplayer       →  værten kører serveren i sin egen app; vennerne forbinder direkte (peer-to-peer)
                      ingen server i skyen, intet dataloft, gratis
 App-filerne       →  bygges af GitHub Actions og lægges på en Release       (wd/.github/workflows/desktop.yml)
-Opdateringer      →  appen tjekker selv Releases og opdaterer sig
+Opdateringer      →  ved start henter appen game/manifest.json fra DENNE side og kun de ændrede filer
+                     (udgiv med  node scripts/game-update.js --publish  i spil-mappen – ingen ny app)
+App-skallen       →  sjældent: ny Release via v…-tag (electron-updater)
 Hjemmesiden       →  GitHub Pages, linker til den nyeste Release            (denne mappe)
 ```
 

@@ -232,6 +232,11 @@
     ? `https://github.com/${cfg.repo}/releases/latest/download/${cfg.downloads[key].file}` : "";
 
   $$("[data-version]").forEach((el) => (el.textContent = cfg.appVersion || ""));
+  // spil-udgaven (manifestet appen opdaterer sig fra) – fx "2026.10.15 · d0f9408"
+  fetch("game/manifest.json", { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).then((m) => {
+    const t = m && m.game ? m.game.replace(/^(\d{4})\.(\d\d)\.(\d\d)-\d{4}-(\w+)$/, "$3.$2.$1 · $4") : "–";
+    $$("[data-game]").forEach((el) => (el.textContent = t));
+  }).catch(() => $$("[data-game]").forEach((el) => (el.textContent = "–")));
   $$("[data-platform]").forEach((card) => {
     const key = card.dataset.platform, d = cfg.downloads?.[key];
     if (!d) return;
