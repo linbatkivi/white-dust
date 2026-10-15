@@ -1,0 +1,15 @@
+/* ==========================================================================
+   WHITE_DUST — skrå scroll (se assets/js/diagonal.js)
+   ========================================================================== */
+
+/* Baggrundsgitteret glider vandret med, mens siden scroller lodret */
+.diag body { background-position: var(--diag-x, 0) 0, var(--diag-x, 0) 0; }
+
+/* Forskudte blokke må aldrig give vandret scrollbar */
+.diag, .diag body { overflow-x: clip; }
+
+/* Blokkene følger scrollen direkte (ingen forsinkelse), så de ikke "slingrer" */
+.diag :is(.hero__inner > *, .head, .intro > *, .versus > *, .feat, .shots > *, .pool__list, .pool__view,
+  .cta .container, .plat, .browser, .step, .reqs, .news, .faq__item, .footer .container, [data-diag]) {
+  will-change: translate;
+}
