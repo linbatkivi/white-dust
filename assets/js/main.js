@@ -31,7 +31,7 @@
 
   $$(".shards").forEach((cv) => {
     const ctx = cv.getContext("2d");
-    let w, h, list = [], bits = [], vis = true;
+    let w, h, list = [], bits = [], vis = true, top = 0, left = 0;
     const make = () => {
       const s = 8 + Math.random() * 34;
       const pts = Array.from({ length: 3 }, (_, i) => {
@@ -50,9 +50,10 @@
       };
     };
     const size = () => {
-      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const dpr = Math.min(devicePixelRatio || 1, 1.25);   // trekanterne behøver ikke fuld retina-opløsning – 2,5× færre pixels at tegne hvert billede
       const r = cv.getBoundingClientRect();
       w = r.width; h = r.height;
+      top = r.top + scrollY; left = r.left;   // gemmes, så loopet ikke skal måle hvert billede (tvinger layout)
       cv.width = w * dpr; cv.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const n = Math.round(Math.min(46, (w * h) / 26000) * Number(cv.dataset.density || 1));
@@ -60,6 +61,8 @@
     };
     size();
     addEventListener("resize", size);
+    // siden kan ændre højde (billeder indlæses) – opdatér den gemte position
+    new ResizeObserver(() => { const r = cv.getBoundingClientRect(); top = r.top + scrollY; left = r.left; }).observe(document.body);
     new IntersectionObserver(([e]) => (vis = e.isIntersecting)).observe(cv);
 
     // klik = skårene i nærheden splintres (SUPERHOT-stil)
@@ -92,8 +95,7 @@
     const loop = () => {
       requestAnimationFrame(loop);
       if (!vis) return;
-      const r = cv.getBoundingClientRect();
-      const mx = mouse.x - r.left, my = mouse.y - r.top;
+      const mx = mouse.x - left, my = mouse.y - (top - scrollY);
       ctx.clearRect(0, 0, w, h);
       const k = reduced ? 0.1 : 1;
       for (const p of list) {
@@ -158,6 +160,10 @@
       run();
     });
   });
+
+  /* ---------- pausér uendelige animationer, der ikke kan ses (sparer arbejde ved hvert billede) ---------- */
+  const loopIO = new IntersectionObserver((ents) => ents.forEach((e) => e.target.classList.toggle("off", !e.isIntersecting)));
+  $$(".frame, .tape, .pool__radar").forEach((el) => loopIO.observe(el));
 
   /* ---------- reveal ved scroll ---------- */
   $$(".wipe").forEach((el) => { el.innerHTML = `<span class="t">${el.innerHTML}</span>`; });
