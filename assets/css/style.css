@@ -310,6 +310,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .shots .frame__media { aspect-ratio: 16 / 10; }
 
 /* ------------------------------------------------------------ map pool */
+.pool__maps { display: flex; gap: 0; margin-bottom: 22px; border: 3px solid var(--paper); width: fit-content; max-width: 100%; flex-wrap: wrap; }
+.pool__map { background: transparent; border: 0; color: var(--paper); padding: 12px 20px; font: 400 clamp(18px, 2vw, 24px) var(--f-display); letter-spacing: -.01em; position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: baseline; gap: 12px; }
+.pool__map + .pool__map { border-left: 3px solid var(--paper); }
+.pool__map small { font: 700 10px var(--f-mono); letter-spacing: .16em; color: #8a8a8a; text-transform: uppercase; }
+.pool__map::before { content: ""; position: absolute; inset: 0; background: var(--red); transform: scaleY(0); transform-origin: bottom; transition: transform .25s var(--ease); z-index: -1; }
+.pool__map:hover::before { transform: scaleY(.08); }
+.pool__map.on::before { transform: scaleY(1); }
+.pool__map.on small { color: var(--paper); }
+.pool__list li[hidden] { display: none; }
+
 .pool { display: grid; grid-template-columns: 340px 1fr; gap: clamp(24px, 4vw, 56px); align-items: start; }
 .pool__list { list-style: none; margin: 0; padding: 0; border: 3px solid var(--paper); }
 .pool__list li + li { border-top: 3px solid var(--paper); }

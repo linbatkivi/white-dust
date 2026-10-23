@@ -201,13 +201,14 @@
   /* ---------- map pool (skifter med scanner-glitch) ---------- */
   const pool = $(".pool");
   if (pool) {
-    const btns = $$(".pool__btn", pool);
+    const allBtns = $$(".pool__btn", pool), mapTabs = $$(".pool__map");
     const frame = $(".pool__view .frame", pool);
     const img = $("[data-pool-img]", pool), radar = $("[data-pool-radar]", pool);
     const name = $("[data-pool-name]", pool), desc = $("[data-pool-desc]", pool), idx = $("[data-pool-idx]", pool);
     const bar = $(".pool__bar i", pool);
-    let cur = 0, timer, auto = true;
-    btns.forEach((b) => { new Image().src = b.dataset.img; });
+    let curMap = "bureau", btns = [], cur = 0, timer, auto = true;
+    const listFor = (m) => allBtns.filter((b) => b.closest("li").dataset.map === m);
+    allBtns.forEach((b) => { new Image().src = b.dataset.img; });
     const show = (i) => {
       cur = (i + btns.length) % btns.length;
       const b = btns[cur];
@@ -222,8 +223,16 @@
       clearTimeout(timer);
       if (auto && !reduced) { bar.classList.add("run"); timer = setTimeout(() => show(cur + 1), 6000); }
     };
-    btns.forEach((b, i) => b.addEventListener("click", () => { auto = false; show(i); }));
+    const setMap = (m) => {
+      curMap = m; btns = listFor(m);
+      allBtns.forEach((b) => { b.closest("li").hidden = b.closest("li").dataset.map !== m; });
+      mapTabs.forEach((t) => t.classList.toggle("on", t.dataset.map === m));
+      show(0);
+    };
+    allBtns.forEach((b) => b.addEventListener("click", () => { auto = false; show(btns.indexOf(b)); }));
+    mapTabs.forEach((t) => t.addEventListener("click", () => { auto = false; setMap(t.dataset.map); }));
     frame.addEventListener("click", () => { auto = false; show(cur + 1); });
+    btns = listFor(curMap);
     new IntersectionObserver(([e]) => { if (e.isIntersecting && auto) show(cur); else clearTimeout(timer); }, { threshold: 0.3 }).observe(pool);
   }
 
